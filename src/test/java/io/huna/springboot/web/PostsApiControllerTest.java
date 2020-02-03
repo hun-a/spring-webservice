@@ -2,9 +2,10 @@ package io.huna.springboot.web;
 
 import io.huna.springboot.domain.posts.Posts;
 import io.huna.springboot.domain.posts.PostsRepository;
+import io.huna.springboot.web.dto.PostsResponseDto;
 import io.huna.springboot.web.dto.PostsSaveRequestDto;
 import io.huna.springboot.web.dto.PostsUpdateRequestDto;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class PostsApiControllerTest {
     @Autowired
     private PostsRepository postsRepository;
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         postsRepository.deleteAll();
     }
@@ -99,5 +100,31 @@ public class PostsApiControllerTest {
         List<Posts> all = postsRepository.findAll();
         assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
         assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
+    }
+
+    @Test
+    public void testFindByIdPosts() throws Exception {
+        // given
+        String title = "title";
+        String content = "content";
+        String author = "author";
+
+        Posts savedPosts = postsRepository.save(Posts.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .build());
+
+        String url = String.format("http://localhost:%d/api/v1/posts/%d", port, savedPosts.getId());
+
+        // when
+        ResponseEntity<PostsResponseDto> responseEntity = restTemplate
+                .getForEntity(url, PostsResponseDto.class);
+
+        // then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().getTitle()).isEqualTo(title);
+        assertThat(responseEntity.getBody().getContent()).isEqualTo(content);
+        assertThat(responseEntity.getBody().getAuthor()).isEqualTo(author);
     }
 }

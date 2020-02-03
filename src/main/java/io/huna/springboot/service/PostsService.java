@@ -2,6 +2,7 @@ package io.huna.springboot.service;
 
         import io.huna.springboot.domain.posts.Posts;
         import io.huna.springboot.domain.posts.PostsRepository;
+        import io.huna.springboot.web.dto.PostsResponseDto;
         import io.huna.springboot.web.dto.PostsSaveRequestDto;
         import io.huna.springboot.web.dto.PostsUpdateRequestDto;
         import lombok.RequiredArgsConstructor;
@@ -26,5 +27,12 @@ public class PostsService {
         posts.update(requestDto.getTitle(), requestDto.getContent());
 
         return id;
+    }
+
+    public PostsResponseDto findById(Long id) {
+        Posts entity = postsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("%d is not found", id)));
+
+        return new PostsResponseDto(entity);
     }
 }

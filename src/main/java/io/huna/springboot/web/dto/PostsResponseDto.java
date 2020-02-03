@@ -2,16 +2,18 @@ package io.huna.springboot.web.dto;
 
 import io.huna.springboot.domain.posts.Posts;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-public class PostsUpdateDto {
+@NoArgsConstructor
+public class PostsResponseDto {
 
     private Long id;
     private String title;
     private String content;
     private String author;
 
-    public PostsUpdateDto(Posts entity) {
+    public PostsResponseDto(Posts entity) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
