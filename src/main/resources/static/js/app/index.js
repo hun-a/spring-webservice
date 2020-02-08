@@ -7,6 +7,9 @@ var index = {
         $('#btn-update').on('click', function() {
             _this.update();
         });
+        $('#btn-delete').on('click', function() {
+            _this.delete();
+        });
     },
     save: function () {
         var data = {
@@ -48,6 +51,21 @@ var index = {
         }).fail(function (error) {
             alert(JSON.stringify(error));
         })
+    },
+    delete: function () {
+        var id = $('#id').val();
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/v1/posts/' + id,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8'
+        }).done(function () {
+            alert('Delete complete.');
+            window.location.href = '/';
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
     }
 };
 
