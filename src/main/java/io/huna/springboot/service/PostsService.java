@@ -2,12 +2,16 @@ package io.huna.springboot.service;
 
         import io.huna.springboot.domain.posts.Posts;
         import io.huna.springboot.domain.posts.PostsRepository;
+        import io.huna.springboot.web.dto.PostsListResponseDto;
         import io.huna.springboot.web.dto.PostsResponseDto;
         import io.huna.springboot.web.dto.PostsSaveRequestDto;
         import io.huna.springboot.web.dto.PostsUpdateRequestDto;
         import lombok.RequiredArgsConstructor;
         import org.springframework.stereotype.Service;
         import org.springframework.transaction.annotation.Transactional;
+
+        import java.util.List;
+        import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -34,5 +38,12 @@ public class PostsService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format("%d is not found", id)));
 
         return new PostsResponseDto(entity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostsListResponseDto> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
